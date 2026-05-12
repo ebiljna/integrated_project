@@ -4,6 +4,7 @@ import config
 import ss4
 import ss1
 import ss2
+import ss3
 import shift_register
 
 board = pymata4.Pymata4()
@@ -12,12 +13,14 @@ def main():
     try:
         while True:
 
+            ss3.update
             ss2.update()
             ss4.update()
             ss1.update()
 
             ss1.apply_outputs()
             ss2.apply_outputs()
+            ss3.apply_outputs
             ss4.apply_outputs()
 
             shift_register.apply()
