@@ -16,7 +16,9 @@ from config import (
     tl5Green,
     plTimer,
     pl1Red,
-    pl2Red
+    pl2Red,
+    pl1Green,
+    pl2Green
 )
 import output
 
@@ -35,16 +37,16 @@ traffic_stage = 0
 traffic_timer = 0
 
 
-utils.state["tl4"]["colour"] = "green"
-utils.state["tl5"]["colour"] = "red"
+config.state["tl4"]["colour"] = "green"
+config.state["tl5"]["colour"] = "red"
 
-utils.state["pedestrian"] = "solid_red"
+utils.config["pedestrian"] = "solid_red"
 
 
 
 def set_tl(tlNumber, redPin, greenPin, yellowPin=None, colour="reset"):
 
-    utils.state[f"tl{tlNumber}"]["colour"] = colour
+    utils.config[f"tl{tlNumber}"]["colour"] = colour
 
     if colour == "red":
 
@@ -117,10 +119,10 @@ def update():
         # TL4 green, TL5 red
         if traffic_stage == 0:
 
-            utils.state["tl4"]["colour"] = "green"
-            utils.state["tl5"]["colour"] = "red"
+            utils.config["tl4"]["colour"] = "green"
+            utils.config["tl5"]["colour"] = "red"
 
-            utils.state["pedestrian"] = "solid_red"
+            utils.config["pedestrian"] = "solid_red"
 
             if traffic_timer == 0:
                 traffic_timer = now
@@ -133,7 +135,7 @@ def update():
         # TL4 yellow
         elif traffic_stage == 1:
 
-            utils.state["tl4"]["colour"] = "yellow"
+            utils.config["tl4"]["colour"] = "yellow"
 
             if now - traffic_timer >= 3:
 
@@ -143,8 +145,8 @@ def update():
         # TL4 red, TL5 green
         elif traffic_stage == 2:
 
-            utils.state["tl4"]["colour"] = "red"
-            utils.state["tl5"]["colour"] = "green"
+            utils.config["tl4"]["colour"] = "red"
+            utils.config["tl5"]["colour"] = "green"
 
             if now - traffic_timer >= 10:
 
@@ -154,7 +156,7 @@ def update():
         # TL5 yellow
         elif traffic_stage == 3:
 
-            utils.state["tl5"]["colour"] = "yellow"
+            utils.config["tl5"]["colour"] = "yellow"
 
             if now - traffic_timer >= 3:
 
@@ -178,13 +180,13 @@ def update():
 
         # If TL4 currently green
 
-        if utils.state["tl4"]["colour"] == "green":
+        if utils.config["tl4"]["colour"] == "green":
 
             # TL4 yellow
             if pedestrian_stage == 0:
 
-                utils.state["tl4"]["colour"] = "yellow"
-                utils.state["tl5"]["colour"] = "red"
+                utils.config["tl4"]["colour"] = "yellow"
+                utils.config["tl5"]["colour"] = "red"
 
                 if now - pedestrian_timer >= 3:
 
@@ -194,9 +196,9 @@ def update():
             # TL4 red + pedestrian green
             elif pedestrian_stage == 1:
 
-                utils.state["tl4"]["colour"] = "red"
+                utils.config["tl4"]["colour"] = "red"
 
-                utils.state["pedestrian"] = "green"
+                utils.config["pedestrian"] = "green"
 
                 if now - pedestrian_timer >= 3:
 
@@ -206,11 +208,11 @@ def update():
             # flashing red
             elif pedestrian_stage == 2:
 
-                utils.state["pedestrian"] = "flashing"
+                utils.config["pedestrian"] = "flashing"
 
                 if now - pedestrian_timer >= 2:
 
-                    utils.state["pedestrian"] = "solid_red"
+                    utils.config["pedestrian"] = "solid_red"
 
                     pedestrian_sequence_active = False
 
@@ -221,13 +223,13 @@ def update():
 
         # If TL5 currently green
 
-        elif utils.state["tl5"]["colour"] == "green":
+        elif utils.config["tl5"]["colour"] == "green":
 
             # TL5 yellow
             if pedestrian_stage == 0:
 
-                utils.state["tl5"]["colour"] = "yellow"
-                utils.state["tl4"]["colour"] = "red"
+                utils.config["tl5"]["colour"] = "yellow"
+                utils.config["tl4"]["colour"] = "red"
 
                 if now - pedestrian_timer >= 3:
 
@@ -237,9 +239,9 @@ def update():
             # TL5 red + pedestrian green
             elif pedestrian_stage == 1:
 
-                utils.state["tl5"]["colour"] = "red"
+                utils.config["tl5"]["colour"] = "red"
 
-                utils.state["pedestrian"] = "green"
+                utils.config["pedestrian"] = "green"
 
                 if now - pedestrian_timer >= 3:
 
@@ -249,11 +251,11 @@ def update():
             # flashing red
             elif pedestrian_stage == 2:
 
-                utils.state["pedestrian"] = "flashing"
+                utils.config["pedestrian"] = "flashing"
 
                 if now - pedestrian_timer >= 2:
 
-                    utils.state["pedestrian"] = "solid_red"
+                    utils.config["pedestrian"] = "solid_red"
 
                     pedestrian_sequence_active = False
 
@@ -269,7 +271,7 @@ def apply_outputs():
         tl4Red,
         tl4Green,
         yellowPin=tl4Yellow,
-        colour=utils.state["tl4"]["colour"]
+        colour=utils.config["tl4"]["colour"]
     )
 
     set_tl(
@@ -277,11 +279,11 @@ def apply_outputs():
         tl5Red,
         tl5Green,
         yellowPin=tl5Yellow,
-        colour=utils.state["tl5"]["colour"]
+        colour=utils.config["tl5"]["colour"]
     )
 
 
-    pedestrian_state = utils.state["pedestrian"]
+    pedestrian_state = utils.config["pedestrian"]
 
     if pedestrian_state == "solid_red":
 
@@ -291,7 +293,8 @@ def apply_outputs():
 
     elif pedestrian_state == "green":
 
-        output.write(plTimer, 1)
+        output.write(pl1Green, 1)
+        output.write(pl2Green, 1)
         output.write(pl2Red, 0)
         output.write(pl1Red, 0)
 
