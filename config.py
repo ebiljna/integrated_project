@@ -24,8 +24,9 @@ wl1=18
 pl1Red=19
 pl1Green=20
 pl2Red=21
-pa1=22
-ss3Timer=23
+pl2Green=22
+pa1=23
+ss3Timer=24
 
 
 #Ultrasonic sensors
@@ -54,10 +55,10 @@ board.set_pin_mode_digital_input(osInput)
 
 #shift register
 ser=13 
-rclck=12
+rclk=12
 srclk=11
 #latchPin
-board.set_pin_mode_digital_output(rclck)
+board.set_pin_mode_digital_output(rclk)
 #dataPin
 board.set_pin_mode_digital_output(ser)
 #clockPin
@@ -65,7 +66,7 @@ board.set_pin_mode_digital_output(srclk)
 
 startTime = time.time()
     
-integration = False
+integration = True
 
 pollingRate = 0.05
 sensorMountHeight = 4.5
